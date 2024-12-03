@@ -19,7 +19,7 @@ public class Main extends Application{
         primaryStage.setTitle("Image Uploader and Viewer");
         primaryStage.show();
         System.out.println("TEST");
-        System.out.println("INI TEST UNTUK BAS");
+        System.out.println("INI TEST UNTUK BAS DARI NICO");
 	}
 
 }
