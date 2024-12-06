@@ -6,20 +6,25 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 public class Main extends Application{
-
+	
+	private static Stage stage;
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		Button root = new Button();
-        Scene scene = new Scene(root, 1280, 720);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Image Uploader and Viewer");
-        primaryStage.show();
-        System.out.println("TEST");
-        System.out.println("INI TEST UNTUK BAS DARI NICO");
+		Main.stage = primaryStage;
+		stage.setTitle("CaLouselF Group 1");
+		new LoginPage();
+	}
+	
+	public static void redirect(Scene redirectScene) {
+		stage.setScene(redirectScene);
+		stage.centerOnScreen();
+		stage.setResizable(false);
+		stage.show();
 	}
 
 }
