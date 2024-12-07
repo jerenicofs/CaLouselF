@@ -2,7 +2,6 @@ package view;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 public class Main extends Application{
@@ -17,7 +16,7 @@ public class Main extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		Main.stage = primaryStage;
 		stage.setTitle("CaLouselF Group 1");
-		new LoginPage();
+		new EditItemPage(); //Nanti harus diganti
 	}
 	
 	public static void redirect(Scene redirectScene) {

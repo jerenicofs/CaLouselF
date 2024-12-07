@@ -5,6 +5,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -14,7 +15,7 @@ public class HomePage implements EventHandler<ActionEvent> {
 	private BorderPane frame;
 	private VBox content;
 	private Label title;
-	
+	private Button editItemBtn;
 	public Scene scene;
 	
 	public HomePage() {
@@ -28,6 +29,7 @@ public class HomePage implements EventHandler<ActionEvent> {
 	public void init() {
 		frame = new BorderPane();
 		title = new Label("Home Page");
+		editItemBtn = new Button("Edit Item Page");
 		
 		content = new VBox();
 		
@@ -37,7 +39,7 @@ public class HomePage implements EventHandler<ActionEvent> {
 	public void setAlignment() {
 		frame.setTop(content);
 		
-		content.getChildren().addAll(title);
+		content.getChildren().addAll(title, editItemBtn);
 		content.setAlignment(Pos.CENTER);
 		content.setSpacing(15);
 		content.setPadding(new Insets(20));
@@ -48,11 +50,14 @@ public class HomePage implements EventHandler<ActionEvent> {
 	}
 	
 	public void events() {
-		
+		editItemBtn.setOnAction(e->handle(e));
 	}
 
 	@Override
 	public void handle(ActionEvent event) {
-		
+		if(event.getSource() == editItemBtn) {
+			System.out.println("Go to Edit Item Page");
+			Main.redirect(new EditItemPage().scene);
+		}
 	}
 }

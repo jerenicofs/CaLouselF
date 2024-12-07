@@ -4,19 +4,19 @@ public class Item {
 	private String itemId;
 	private String itemName;
 	private String itemSize;
-	private String itemPrize;
+	private String itemPrice;
 	private String itemCategory;
 	private String itemStatus;
 	private String itemWishlist;
 	private String itemOfferStatus;
 
-	public Item(String itemId, String itemName, String itemSize, String itemPrize, String itemCategory,
+	public Item(String itemId, String itemName, String itemSize, String itemPrice, String itemCategory,
 			String itemStatus, String itemWishlist, String itemOfferStatus) {
 		super();
 		this.itemId = itemId;
 		this.itemName = itemName;
 		this.itemSize = itemSize;
-		this.itemPrize = itemPrize;
+		this.itemPrice = itemPrice;
 		this.itemCategory = itemCategory;
 		this.itemStatus = itemStatus;
 		this.itemWishlist = itemWishlist;
@@ -47,12 +47,12 @@ public class Item {
 		this.itemSize = itemSize;
 	}
 
-	public String getItemPrize() {
-		return itemPrize;
+	public String getItemPrice() {
+		return itemPrice;
 	}
 
-	public void setItemPrize(String itemPrize) {
-		this.itemPrize = itemPrize;
+	public void setItemPrice(String itemPrice) {
+		this.itemPrice = itemPrice;
 	}
 
 	public String getItemCategory() {
