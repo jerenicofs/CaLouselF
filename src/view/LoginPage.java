@@ -124,7 +124,7 @@ public class LoginPage implements EventHandler<ActionEvent> {
 			// Login success
 			else {
 				
-				System.out.println("Admin Login");
+				System.out.println("Login");
 				Main.redirect(new HomePage().scene);
 			
 			}

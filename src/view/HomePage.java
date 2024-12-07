@@ -57,7 +57,7 @@ public class HomePage implements EventHandler<ActionEvent> {
 	public void handle(ActionEvent event) {
 		if(event.getSource() == editItemBtn) {
 			System.out.println("Go to Edit Item Page");
-			Main.redirect(new EditItemPage().scene);
+			Main.redirect(new SellerItemsPage().scene);
 		}
 	}
 }

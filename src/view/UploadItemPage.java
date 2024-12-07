@@ -4,81 +4,70 @@ import controller.ItemController;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import model.Item;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 
-public class EditItemPage {
+public class UploadItemPage {
 	private BorderPane root;
 	private GridPane grid;
 	public Scene scene;
 	private Label nameLabel, catLabel, sizeLabel, priceLabel, title;
-	private Button updateBtn, backBtn;
+	private Button submitBtn, backBtn;
 	private ItemController ic;
 	private TextField nameField, catField, sizeField, priceField;
-	private Item item;
-
 	public void init() {
-		title = new Label("Update Page");
 		root = new BorderPane();
 		scene = new Scene(root, 1200, 600);
 		grid = new GridPane();
-		nameLabel = new Label();
-		nameField = new TextField();
-		nameField.setText(item.getItemName());
+		nameLabel = new Label("Name:");
+        nameField = new TextField();
+        title = new Label("Upload New Item");
 
-		catLabel = new Label();
-		catField = new TextField();
-		catField.setText(item.getItemCategory());
+        catLabel = new Label("Category:");
+        catField = new TextField();
 
-		sizeLabel = new Label();
-		sizeField = new TextField();
-		sizeField.setText(item.getItemSize());
+        sizeLabel = new Label("Size:");
+        sizeField = new TextField();
 
-		priceLabel = new Label();
-		priceField = new TextField();
-		priceField.setText(item.getItemPrice());
-
-		updateBtn = new Button("Submit");
-		backBtn = new Button("Back");
-		ic = new ItemController();
+        priceLabel = new Label("Price:");
+        priceField = new TextField();
+        
+        submitBtn = new Button("Submit");
+        backBtn = new Button("Back");
+        ic = new ItemController();
 	}
-
+	
 	public void setAlignment() {
 		root.setLeft(grid);
 		grid.setPadding(new Insets(20));
-		grid.setVgap(10);
-		grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setHgap(10);
+        
+        grid.add(title, 0, 0);
+        
+        grid.add(nameLabel, 0, 1);
+        grid.add(nameField, 1, 1);
 
-		grid.add(title, 0, 0);
-		grid.add(nameLabel, 0, 1);
-		grid.add(nameField, 1, 1);
+        grid.add(catLabel, 0, 2);
+        grid.add(catField, 1, 2);
 
-		grid.add(catLabel, 0, 2);
-		grid.add(catField, 1, 2);
+        grid.add(sizeLabel, 0, 3);
+        grid.add(sizeField, 1, 3);
 
-		grid.add(sizeLabel, 0, 3);
-		grid.add(sizeField, 1, 3);
+        grid.add(priceLabel, 0, 4);
+        grid.add(priceField, 1, 4);
 
-		grid.add(priceLabel, 0, 4);
-		grid.add(priceField, 1, 4);
-
-		grid.add(updateBtn, 1, 5);
-		grid.add(backBtn, 2, 5);
-
+        grid.add(submitBtn, 1, 5);
+        grid.add(backBtn, 2, 5);
 	}
-
+	
 	public void event() {
-		updateBtn.setOnAction(e -> handle(e));
+		submitBtn.setOnAction(e -> handle(e));
 		backBtn.setOnAction(e -> handle(e));
 	}
-
+	
 	public void handle(ActionEvent event) {
-		if (event.getSource() == updateBtn) {
+		if (event.getSource() == submitBtn) {
 			double res;
 			res = ic.checkItemValidation(nameField.getText(), catField.getText(), sizeField.getText(),
 					priceField.getText());
@@ -123,12 +112,12 @@ public class EditItemPage {
 					return;
 				}
 			}
-			// Update Success
+			// Upload Success
 			else {
 
-				showSuccess("Success", "Your Item has been Updated");
-				ic.editItem(item.getItemId(), nameField.getText(), catField.getText(), sizeField.getText(),
-						priceField.getText());
+				showSuccess("Success", "Your Item has been Uploaded and Now are waiting to be Approved by Admin");
+				ic.uploadItem(nameField.getText(), catField.getText(), sizeField.getText(),
+					priceField.getText());
 				System.out.println("Berhasil Upload");
 				Main.redirect(new SellerItemsPage().scene);
 			}
@@ -137,11 +126,10 @@ public class EditItemPage {
 			Main.redirect(new SellerItemsPage().scene);
 		}
 	}
-
-	public void setStyle() {
-		title.setStyle("-fx-font-size: 36px;");
-	}
-
+    public void setStyle() {
+        title.setStyle("-fx-font-size: 36px;");
+    }
+    
 	public void showAlert(String title, String errorMessage) {
 		Alert alert = new Alert(Alert.AlertType.ERROR);
 		alert.setTitle(title);
@@ -149,7 +137,7 @@ public class EditItemPage {
 		alert.setContentText(errorMessage);
 		alert.showAndWait();
 	}
-
+	
 	public void showSuccess(String title, String message) {
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
 		alert.setTitle(title);
@@ -158,14 +146,13 @@ public class EditItemPage {
 		alert.showAndWait();
 	}
 
-	public EditItemPage(Item i) {
-		this.item = i;
+	
+	public UploadItemPage() {
 		init();
 		setAlignment();
 		setStyle();
 		event();
 		Main.redirect(scene);
-
 	}
 
 }

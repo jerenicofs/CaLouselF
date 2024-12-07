@@ -16,7 +16,7 @@ public class Main extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		Main.stage = primaryStage;
 		stage.setTitle("CaLouselF Group 1");
-		new EditItemPage(); //Nanti harus diganti
+		new LoginPage();
 	}
 	
 	public static void redirect(Scene redirectScene) {
