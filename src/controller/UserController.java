@@ -7,6 +7,7 @@ import java.util.Random;
 
 import database.DatabaseConnection;
 import model.User;
+import util.Session;
 
 public class UserController {
 	
@@ -40,7 +41,7 @@ public class UserController {
 		else if(password.isEmpty()) return -2;
 		
 		// Kalau yang login adalah admin
-		if(username.equals("admin") && password.equals("password")) return 2;
+		if(username.equals("admin") && password.equals("admin")) return 2;
 		
 		boolean loginFlag = false;
 		
@@ -48,15 +49,18 @@ public class UserController {
 		users = getAllUsers();
 		
 		
+		User loggedInUser = null;
 		for(User x : users) {
 			if(x.getUsername().equals(username) && x.getPassword().equals(password)) {
 				loginFlag = true;
+				loggedInUser = x;
 				break;
 			}
 		}
 		
 		if(!loginFlag) return -3;
 		
+		Session.setUser(loggedInUser);
 		return 1;
 	}
 	

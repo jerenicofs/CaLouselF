@@ -15,6 +15,15 @@ public class UploadItemPage {
 	private Button submitBtn, backBtn;
 	private ItemController ic;
 	private TextField nameField, catField, sizeField, priceField;
+	
+	public UploadItemPage() {
+		init();
+		setAlignment();
+		setStyle();
+		event();
+		Main.redirect(scene);
+	}
+	
 	public void init() {
 		root = new BorderPane();
 		scene = new Scene(root, 1200, 600);
@@ -146,13 +155,5 @@ public class UploadItemPage {
 		alert.showAndWait();
 	}
 
-	
-	public UploadItemPage() {
-		init();
-		setAlignment();
-		setStyle();
-		event();
-		Main.redirect(scene);
-	}
 
 }

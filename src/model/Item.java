@@ -6,12 +6,13 @@ public class Item {
 	private String itemSize;
 	private String itemPrice;
 	private String itemCategory;
-	private String itemStatus;
-	private String itemWishlist;
-	private String itemOfferStatus;
+	private String itemStatus; // default: Pending
+	private String itemWishlist; // default: null
+	private String itemOfferStatus; // default: null
+	private String userId;
 
 	public Item(String itemId, String itemName, String itemSize, String itemPrice, String itemCategory,
-			String itemStatus, String itemWishlist, String itemOfferStatus) {
+			String itemStatus, String itemWishlist, String itemOfferStatus, String userId) {
 		super();
 		this.itemId = itemId;
 		this.itemName = itemName;
@@ -21,6 +22,7 @@ public class Item {
 		this.itemStatus = itemStatus;
 		this.itemWishlist = itemWishlist;
 		this.itemOfferStatus = itemOfferStatus;
+		this.userId = userId;
 	}
 
 	public String getItemId() {
@@ -87,6 +89,13 @@ public class Item {
 		this.itemOfferStatus = itemOfferStatus;
 	}
 	
+	public String getUserId() {
+		return userId;
+	}
+	
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 	
 
 }

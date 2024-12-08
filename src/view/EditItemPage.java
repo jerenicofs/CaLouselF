@@ -23,23 +23,23 @@ public class EditItemPage {
 	private Item item;
 
 	public void init() {
-		title = new Label("Update Page");
+		title = new Label("Edit Page");
 		root = new BorderPane();
 		scene = new Scene(root, 1200, 600);
 		grid = new GridPane();
-		nameLabel = new Label();
+		nameLabel = new Label("Name: ");
 		nameField = new TextField();
 		nameField.setText(item.getItemName());
 
-		catLabel = new Label();
+		catLabel = new Label("Category: ");
 		catField = new TextField();
 		catField.setText(item.getItemCategory());
 
-		sizeLabel = new Label();
+		sizeLabel = new Label("Size: ");
 		sizeField = new TextField();
 		sizeField.setText(item.getItemSize());
 
-		priceLabel = new Label();
+		priceLabel = new Label("Price: ");
 		priceField = new TextField();
 		priceField.setText(item.getItemPrice());
 
@@ -129,7 +129,7 @@ public class EditItemPage {
 				showSuccess("Success", "Your Item has been Updated");
 				ic.editItem(item.getItemId(), nameField.getText(), catField.getText(), sizeField.getText(),
 						priceField.getText());
-				System.out.println("Berhasil Upload");
+				System.out.println("Update Berhasil");
 				Main.redirect(new SellerItemsPage().scene);
 			}
 

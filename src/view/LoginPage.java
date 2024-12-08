@@ -17,6 +17,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.User;
+import util.Session;
 
 public class LoginPage implements EventHandler<ActionEvent> {
 	
@@ -30,9 +31,7 @@ public class LoginPage implements EventHandler<ActionEvent> {
 	private ArrayList<User> users;
 	
 	private HBox hbButton;
-	
-	private static String userID = "";
-	private static String userRole = "";
+
 	
 	public Scene scene;
 	
@@ -124,7 +123,11 @@ public class LoginPage implements EventHandler<ActionEvent> {
 			// Login success
 			else {
 				
-				System.out.println("Login");
+				if(res == 2) System.out.println("Logged in as admin");
+				else{
+					System.out.println("Logged in as " + Session.getUser().getRole());
+					System.out.println("User logged in: " + Session.getUser().getUsername());
+				}
 				Main.redirect(new HomePage().scene);
 			
 			}
