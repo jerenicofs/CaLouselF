@@ -84,9 +84,9 @@ public class HomePage implements EventHandler<ActionEvent> {
 			// Seller yang login
 			else if(Session.getUser().getRole().equals("Seller")) navbar.getChildren().addAll(itemManageBtn, offerManageBtn);
 			
+			// Admin yang login
+			else if(Session.getUser().getRole().equals("Admin")) navbar.getChildren().add(requestManageBtn);
 		}
-		// Admin yang login
-		else navbar.getChildren().add(requestManageBtn);
 		
 		navbar.setSpacing(10);
 		navbar.setAlignment(Pos.CENTER);
@@ -109,6 +109,7 @@ public class HomePage implements EventHandler<ActionEvent> {
 	
 	public void events() {
 		itemManageBtn.setOnAction(e->handle(e));
+		requestManageBtn.setOnAction(e->handle(e));
 	}
 
 	@Override
@@ -116,6 +117,9 @@ public class HomePage implements EventHandler<ActionEvent> {
 		if(event.getSource() == itemManageBtn) {
 			System.out.println("Go to Edit Item Page");
 			Main.redirect(new SellerItemsPage().scene);
+		}else if(event.getSource() == requestManageBtn) {
+			System.out.println("Go to Admin Approval Page");
+			Main.redirect(new AdminViewRequestedItemPage().scene);
 		}
 	}
 	

@@ -1,6 +1,7 @@
 package controller;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -18,7 +19,33 @@ public class ItemController {
 	public ArrayList<Item> getAllItems(){
 		 ArrayList<Item> items = new ArrayList<>();
 		 String query = "SELECT * FROM items WHERE itemStatus = 'Accepted'";
-		 
+		 PreparedStatement prepQuery = db.prepareStatement(query);
+		 try {
+			 db.rs = prepQuery.executeQuery();
+
+			 while (db.rs != null && db.rs.next()) {
+				 	items.add(new Item(
+	                db.rs.getString("itemId"),
+	                db.rs.getString("itemName"),
+	                db.rs.getString("itemSize"),
+	                db.rs.getString("itemPrice"),
+	                db.rs.getString("itemCategory"),
+	                db.rs.getString("itemStatus"),
+	                db.rs.getString("itemWishlist"),
+	                db.rs.getString("itemOfferStatus"),
+	                db.rs.getString("userId")
+	            ));
+	        }
+		 } catch (SQLException e) {
+	        e.printStackTrace();
+		 }
+
+		 return items;
+	}
+	//Method untuk fetch semua items yang sudah di approved admin
+	public ArrayList<Item> getAllPendingItems(){
+		 ArrayList<Item> items = new ArrayList<>();
+		 String query = "SELECT * FROM items WHERE itemStatus = 'Pending'";
 		 PreparedStatement prepQuery = db.prepareStatement(query);
 		 try {
 			 db.rs = prepQuery.executeQuery();
@@ -191,6 +218,92 @@ public class ItemController {
 			
 		}
 		return id;
+	}
+	
+	//Method untuk meng-approve item oleh admin
+	public void ApproveItem(String itemId) {
+		String query = "UPDATE items SET itemStatus = 'Accepted' WHERE itemId = ?";
+		PreparedStatement ps = db.prepareStatement(query);
+		try {
+			ps.setString(1, itemId);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void DeclineItem(String itemId) {
+		String query = "SELECT * FROM items WHERE itemId = ?";
+		PreparedStatement ps = db.prepareStatement(query);
+		try {
+			ps.setString(1, itemId);
+			ResultSet rs = ps.executeQuery();
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+	}
+	
+	//Method untuk dapet reason_logId terakhir
+	public String getLastId() {
+		String query = "SELECT reason_logId FROM reason_logs ORDER BY reason_logId DESC LIMIT 1";
+		PreparedStatement ps = db.prepareStatement(query);
+		try {
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) {
+				return rs.getString("reason_logId");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "R001";
+		
+		
+	}
+	
+	//Method untuk generate reason_logId baru
+	public String generateNewReasonLogId() {
+		String lastId = getLastId();
+		String numberId = lastId.substring(1);
+		try {
+			int num = Integer.parseInt(numberId);
+			num++;
+			return String.format("R%03d", num);
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		return "R001";
+	}
+	
+	//Method untuk validasi reason
+	public int validateReason(String text) {
+		if(text.isBlank()) {
+			return -1;
+		}
+		return 1;
+	}
+	
+	//Method untuk buat reason_log baru
+	public void addReason_Log(Item i, String reasonText) {
+		String query = "INSERT INTO reason_logs (reason_logId, userId, itemName, itemSize, itemPrice, itemCategory, reasonText)" + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+		PreparedStatement psQuery = db.prepareStatement(query);
+		String reason_LogId = generateNewReasonLogId();
+		try {
+			psQuery.setString(1, reason_LogId);
+			psQuery.setString(2, i.getUserId());
+			psQuery.setString(3, i.getItemName());
+			psQuery.setString(4, i.getItemSize());
+			psQuery.setString(5, i.getItemPrice());
+			psQuery.setString(6, i.getItemCategory());
+			psQuery.setString(7, reasonText);
+			psQuery.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 
