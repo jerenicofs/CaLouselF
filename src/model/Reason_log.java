@@ -1,13 +1,13 @@
 package model;
 
 public class Reason_log {
-	private String reason_logId;
-	private String userId;
-	private String itemName;
-	private String itemSize;
-	private String itemPrice;
-	private String itemCategory;
-	private String reasonText;
+	private String reason_logId; //id reason_log
+	private String userId;		 //id user yang barangnya ditolak
+	private String itemName;	 //nama item yang ditolak
+	private String itemSize;	 //size item yang ditolak
+	private String itemPrice;	 //price item yang ditolak
+	private String itemCategory; //category item yang ditolak
+	private String reasonText;	 //alasan kenapa item ditolak (telah diisi admin)
 	
 	public Reason_log(String reasonId, String userId, String itemName, String itemSize, String itemPrice,
 			String itemCategory, String reasonText) {

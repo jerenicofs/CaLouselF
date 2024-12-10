@@ -8,6 +8,7 @@ import java.util.Random;
 
 import database.DatabaseConnection;
 import model.Item;
+import model.Reason_log;
 import util.Session;
 
 public class ItemController {
@@ -15,10 +16,10 @@ public class ItemController {
 	private DatabaseConnection db = DatabaseConnection.getInstance();
 	
 	
-	// Method untul fetch semua items di database
+	// Method untuk fetch semua items yang sudah di accept/approve admin di database
 	public ArrayList<Item> getAllItems(){
 		 ArrayList<Item> items = new ArrayList<>();
-		 String query = "SELECT * FROM items WHERE itemStatus = 'Accepted'";
+		 String query = "SELECT * FROM items WHERE itemStatus = 'Approved'";
 		 PreparedStatement prepQuery = db.prepareStatement(query);
 		 try {
 			 db.rs = prepQuery.executeQuery();
@@ -42,7 +43,7 @@ public class ItemController {
 
 		 return items;
 	}
-	//Method untuk fetch semua items yang sudah di approved admin
+	//Method untuk fetch semua items yang menunggu di approve admin
 	public ArrayList<Item> getAllPendingItems(){
 		 ArrayList<Item> items = new ArrayList<>();
 		 String query = "SELECT * FROM items WHERE itemStatus = 'Pending'";
@@ -74,7 +75,7 @@ public class ItemController {
 	public ArrayList<Item> getAllItemsbyUser() {
 	    ArrayList<Item> items = new ArrayList<>();
 	    
-	    String query = "SELECT * FROM items WHERE itemStatus = 'Accepted' AND userId = ?";
+	    String query = "SELECT * FROM items WHERE itemStatus = 'Approved' AND userId = ?";
 
 	    PreparedStatement prepQuery = db.prepareStatement(query);
 	    try {
@@ -99,6 +100,33 @@ public class ItemController {
 	    }
 
 	    return items;
+	}
+	
+	// Method untuk fetch semua reason_log untuk suatu user
+	public ArrayList<Reason_log> getAllReason_Log(){
+		 ArrayList<Reason_log> reasons = new ArrayList<>();
+		 String query = "SELECT * FROM reason_logs WHERE userId = ?";
+		 PreparedStatement prepQuery = db.prepareStatement(query);
+		 try {
+			 prepQuery.setString(1, Session.getUser().getUserId());
+			 db.rs = prepQuery.executeQuery();
+
+			 while (db.rs != null && db.rs.next()) {
+				 	reasons.add(new Reason_log(
+	                db.rs.getString("reason_logId"),
+	                db.rs.getString("userId"),
+	                db.rs.getString("itemName"),
+	                db.rs.getString("itemSize"),
+	                db.rs.getString("itemPrice"),
+	                db.rs.getString("itemCategory"),
+	                db.rs.getString("reasonText")
+	            ));
+	        }
+		 } catch (SQLException e) {
+	        e.printStackTrace();
+		 }
+
+		 return reasons;
 	}
 	
 	// Method wajib: Method bagi seller untuk upload barang baru
@@ -143,6 +171,9 @@ public class ItemController {
 			e.printStackTrace();
 		}
 	}
+	
+	
+
 	
 	// Method wajib: Method untuk validasi item yang di upload/edit oleh seller
 	public double checkItemValidation(String name, String category, String size, String price) {
@@ -220,9 +251,9 @@ public class ItemController {
 		return id;
 	}
 	
-	//Method untuk meng-approve item oleh admin
+	//Method wajib: untuk meng-approve item oleh admin
 	public void ApproveItem(String itemId) {
-		String query = "UPDATE items SET itemStatus = 'Accepted' WHERE itemId = ?";
+		String query = "UPDATE items SET itemStatus = 'Approved' WHERE itemId = ?";
 		PreparedStatement ps = db.prepareStatement(query);
 		try {
 			ps.setString(1, itemId);
@@ -232,6 +263,7 @@ public class ItemController {
 		}
 	}
 	
+	//Method wajib: untuk mendecline item oleh admin 
 	public void DeclineItem(String itemId) {
 		String query = "SELECT * FROM items WHERE itemId = ?";
 		PreparedStatement ps = db.prepareStatement(query);
@@ -244,7 +276,8 @@ public class ItemController {
 		}
 	}
 	
-	//Method untuk dapet reason_logId terakhir
+	
+	//Method tambahan untuk dapet reason_logId terakhir
 	public String getLastId() {
 		String query = "SELECT reason_logId FROM reason_logs ORDER BY reason_logId DESC LIMIT 1";
 		PreparedStatement ps = db.prepareStatement(query);
@@ -263,7 +296,7 @@ public class ItemController {
 		
 	}
 	
-	//Method untuk generate reason_logId baru
+	//Method tambahan untuk generate reason_logId baru
 	public String generateNewReasonLogId() {
 		String lastId = getLastId();
 		String numberId = lastId.substring(1);
@@ -278,7 +311,7 @@ public class ItemController {
 		return "R001";
 	}
 	
-	//Method untuk validasi reason
+	//Method tambahan untuk validasi reason (tidak boleh blank)
 	public int validateReason(String text) {
 		if(text.isBlank()) {
 			return -1;
@@ -286,7 +319,7 @@ public class ItemController {
 		return 1;
 	}
 	
-	//Method untuk buat reason_log baru
+	//Method tambahan untuk buat reason_log baru
 	public void addReason_Log(Item i, String reasonText) {
 		String query = "INSERT INTO reason_logs (reason_logId, userId, itemName, itemSize, itemPrice, itemCategory, reasonText)" + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 		PreparedStatement psQuery = db.prepareStatement(query);

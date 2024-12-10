@@ -24,7 +24,6 @@ public class AdminViewRequestedItemPage {
 	private Label title, pageDesc, tablePlaceholder;
 	private Button backBtn;
 	private ItemController ic;
-	private Item item;
 	private TableView<Item> table;
 
 	public AdminViewRequestedItemPage() {
