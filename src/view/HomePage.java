@@ -28,7 +28,7 @@ public class HomePage implements EventHandler<ActionEvent> {
 	private Button logoutBtn;
 
 	// Seller Buttons
-	private Button itemManageBtn, offerManageBtn, viewRejectedItemBtn;
+	private Button itemManageBtn, offerManageBtn, viewRejectedItemBtn, viewOfferedItemBtn;
 
 	// Admin Buttons
 	private Button requestManageBtn;
@@ -61,6 +61,7 @@ public class HomePage implements EventHandler<ActionEvent> {
 		itemManageBtn = new Button("Item Management Page");
 		offerManageBtn = new Button("Offer Management Page");
 		viewRejectedItemBtn = new Button("View Rejected Item");
+		viewOfferedItemBtn = new Button("View Offered Item");
 
 		// Admin button initialization
 		requestManageBtn = new Button("Request Item Management Page");
@@ -83,21 +84,23 @@ public class HomePage implements EventHandler<ActionEvent> {
 		frame.setTop(header);
 		frame.setCenter(container);
 
+		navbar.getChildren().add(logoutBtn);
 		if (Session.getUser() != null) {
-			navbar.getChildren().add(logoutBtn);
 			// Buyer yang login
 			if (Session.getUser().getRole().equals("Buyer"))
 				navbar.getChildren().add(wishlistBtn);
 
 			// Seller yang login
 			else if (Session.getUser().getRole().equals("Seller"))
-				navbar.getChildren().addAll(itemManageBtn, offerManageBtn, viewRejectedItemBtn);
+				navbar.getChildren().addAll(itemManageBtn, offerManageBtn, viewRejectedItemBtn, viewOfferedItemBtn);
 
-			// Admin yang login
-			else if (Session.getUser().getRole().equals("Admin"))
-				navbar.getChildren().add(requestManageBtn);
+			
+		}// Admin yang login
+		else{
+			
+			navbar.getChildren().add(requestManageBtn);
 		}
-
+		
 		navbar.setSpacing(10);
 		navbar.setAlignment(Pos.CENTER);
 
@@ -126,35 +129,53 @@ public class HomePage implements EventHandler<ActionEvent> {
 
 		// Seller Event
 		viewRejectedItemBtn.setOnAction(e -> handle(e));
+		viewOfferedItemBtn.setOnAction(e -> handle(e));
 		itemManageBtn.setOnAction(e -> handle(e));
 
 		// Buyer Event
 		makeOfferBtn.setOnAction(e -> handle(e));
 		purchaseBtn.setOnAction(e -> handle(e));
-		addToWishlistBtn.setOnAction(e-> handle(e));
+		addToWishlistBtn.setOnAction(e -> handle(e));
 
 	}
 
 	@Override
 	public void handle(ActionEvent event) {
+		// General Event
+		if (event.getSource() == logoutBtn) {
+			// Log Out
+			System.out.println("Log Out");
+			Main.redirect(new LoginPage().scene);
+		}
+
+		// Admin Event
+		if (event.getSource() == requestManageBtn) {
+			// Admin Manage Pending Item
+			System.out.println("Go to Admin Approval Page");
+			Main.redirect(new AdminViewRequestedItemPage().scene);
+		}
+
+		// Buyer Event
+		if (event.getSource() == makeOfferBtn) {
+			// Buyer Make Offer for an Item
+		}
+
+		// Seller Event
 		if (event.getSource() == itemManageBtn) {
 			// Seller Edit Item
 			System.out.println("Go to Edit Item Page");
 			Main.redirect(new SellerItemsPage().scene);
-		} else if (event.getSource() == requestManageBtn) {
-			// Admin Manage Pending Item
-			System.out.println("Go to Admin Approval Page");
-			Main.redirect(new AdminViewRequestedItemPage().scene);
-		} else if (event.getSource() == logoutBtn) {
-			// Log Out
-			System.out.println("Log Out");
-			Main.redirect(new LoginPage().scene);
-		} else if (event.getSource() == viewRejectedItemBtn) {
+
+		}
+		if (event.getSource() == viewRejectedItemBtn) {
 			// Seller View Rejected Item
 			System.out.println("Go to Seller Rejected Item Page");
 			Main.redirect(new SellerRejectedItemPage().scene);
-		} else if (event.getSource() == makeOfferBtn) {
-			// Buyer Make Offer for an Item
+		}
+		if (event.getSource() == viewOfferedItemBtn) {
+			// Seller View Offered Item
+			System.out.println("Go to Seller Offered Item Page");
+			Main.redirect(new SellerOfferedItem().scene);
 		}
 	}
 
@@ -174,7 +195,6 @@ public class HomePage implements EventHandler<ActionEvent> {
 	// Method untuk membuat card untuk setiap item yang ada
 	public VBox createItemCard(Item item) {
 		VBox card = new VBox(10);
-		
 
 		Label nameLabel = new Label("Name: " + item.getItemName());
 		Label sizeLabel = new Label("Size: " + item.getItemSize());

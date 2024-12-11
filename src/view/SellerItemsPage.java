@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import model.Item;
+import model.Offer;
 
 public class SellerItemsPage{
 	private BorderPane root;
@@ -16,7 +17,7 @@ public class SellerItemsPage{
     public Scene scene;
     private Label title, text, tablePlaceholder;
     private Button uploadBtn, backBtn;
-    private TableView<Item> table;
+    private TableView<Item> tableItem;
     private ItemController ic;
 
     public SellerItemsPage() {
@@ -36,9 +37,9 @@ public class SellerItemsPage{
         text = new Label("Edit Your Items here");
         uploadBtn = new Button("Upload New Item");
         backBtn = new Button("Back");
-        table = new TableView<>();
+        tableItem = new TableView<>();
         tablePlaceholder = new Label("No items available. Upload a new item to get started.");
-        table.setPlaceholder(tablePlaceholder);
+        tableItem.setPlaceholder(tablePlaceholder);
         
         setupTable();
         loadData();
@@ -46,7 +47,7 @@ public class SellerItemsPage{
 	
     @SuppressWarnings("unchecked")
 	private void setupTable() {
-
+    	//Setup Table Item milik Seller
         TableColumn<Item, String> nameCol = new TableColumn<>("Item Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("itemName"));
         nameCol.setMinWidth(150);
@@ -114,12 +115,14 @@ public class SellerItemsPage{
             }
         });
 
-        table.getColumns().addAll(nameCol, catCol, sizeCol, priceCol, updateCol, deleteCol);
+        tableItem.getColumns().addAll(nameCol, catCol, sizeCol, priceCol, updateCol, deleteCol);
+        
+        
     }
     
     
     private void loadData() {
-        table.getItems().setAll(ic.getAllItemsbyUser());
+        tableItem.getItems().setAll(ic.getAllItemsbyUser());
     }
 	
     
@@ -136,7 +139,7 @@ public class SellerItemsPage{
         grid.add(text, 0, 0);
         grid.add(uploadBtn, 0, 1);
         grid.add(backBtn, 1, 1);
-        grid.add(table, 0, 2);
+        grid.add(tableItem, 0, 2);
     }
     
     public void event() {
