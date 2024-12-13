@@ -30,12 +30,12 @@ public class WishlistController {
 	            ));
 	        }
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return wishlists;
 	}
 	
+	// Method wajib: untuk insert ke db wishlist
 	public void addWishlist(String itemId, String userId) {
 		String query = "INSERT INTO wishlistId (wishlistId, itemId, userId)" + "VALUES (?, ?, ?)";
 		PreparedStatement psQuery = db.prepareStatement(query);
@@ -60,7 +60,6 @@ public class WishlistController {
 				return rs.getString("wishlistId");
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -78,7 +77,6 @@ public class WishlistController {
 			return String.format("W%03d", num);
 		} catch (Exception e) {
 			e.printStackTrace();
-			// TODO: handle exception
 		}
 		return "W001";
 	}

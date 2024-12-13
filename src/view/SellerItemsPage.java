@@ -16,7 +16,7 @@ public class SellerItemsPage{
     private GridPane grid;
     public Scene scene;
     private Label title, text, tablePlaceholder;
-    private Button uploadBtn, backBtn;
+    private Button backBtn;
     private TableView<Item> tableItem;
     private ItemController ic;
 
@@ -35,7 +35,6 @@ public class SellerItemsPage{
         scene = new Scene(root, 1200, 600);
         title = new Label("Shop Editor");
         text = new Label("Edit Your Items here");
-        uploadBtn = new Button("Upload New Item");
         backBtn = new Button("Back");
         tableItem = new TableView<>();
         tablePlaceholder = new Label("No items available. Upload a new item to get started.");
@@ -137,22 +136,17 @@ public class SellerItemsPage{
         grid.setPadding(new Insets(25, 25, 25, 25));
         title.setAlignment(Pos.TOP_CENTER);
         grid.add(text, 0, 0);
-        grid.add(uploadBtn, 0, 1);
         grid.add(backBtn, 1, 1);
         grid.add(tableItem, 0, 2);
     }
     
     public void event() {
-    	uploadBtn.setOnAction(e -> handle(e));
     	backBtn.setOnAction(e -> handle(e));
     }
     
     public void handle(ActionEvent event) {
-    	if(event.getSource() == uploadBtn) {
-    		System.out.println("Upload Button Terpencet");
-    		Main.redirect(new UploadItemPage().scene);
-    	}
-    	else if (event.getSource() == backBtn) {
+  
+    	if (event.getSource() == backBtn) {
 			Main.redirect(new HomePage().scene);
 		}
     }

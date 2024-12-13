@@ -1,5 +1,6 @@
 package view;
 
+import java.util.ArrayList;
 import controller.ItemController;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -13,8 +14,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import model.Item;
 import model.Offer;
+import util.Session;
 
 public class SellerOfferedItem {
 	private BorderPane root;
@@ -39,7 +40,7 @@ public class SellerOfferedItem {
 		root = new BorderPane();
 		grid = new GridPane();
 		scene = new Scene(root, 1200, 600);
-		title = new Label("Admin Dashboard");
+		title = new Label("Seller Dashboard");
 		pageDesc = new Label("Here are the items offered by Buyer");
 		backBtn = new Button("Back");
 		table = new TableView<>();
@@ -47,16 +48,107 @@ public class SellerOfferedItem {
 		table.setPlaceholder(tablePlaceholder);
 		setupTable();
 		loadData();
-
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void setupTable() {
-		
+	    TableColumn<Offer, String> itemNameCol = new TableColumn<>("Item Name");
+	    itemNameCol.setCellFactory(col -> new TableCell<>() {
+	        @Override
+	        protected void updateItem(String item, boolean empty) {
+	            super.updateItem(item, empty);
+	            if (empty || getTableRow() == null) {
+	                setText(null);
+	            } else {
+	                Offer offer = getTableView().getItems().get(getIndex());
+	                String itemName = ic.getItemNameById(offer.getItemId());
+	                setText(itemName);
+	            }
+	        }
+	    });
+	    itemNameCol.setMinWidth(200);
+
+	    TableColumn<Offer, String> itemCategoryCol = new TableColumn<>("Category");
+	    itemCategoryCol.setCellFactory(col -> new TableCell<>() {
+	        @Override
+	        protected void updateItem(String item, boolean empty) {
+	            super.updateItem(item, empty);
+	            if (empty || getTableRow() == null) {
+	                setText(null);
+	            } else {
+	                Offer offer = getTableView().getItems().get(getIndex());
+	                String itemCategory = ic.getItemCategoryById(offer.getItemId());
+	                setText(itemCategory);
+	            }
+	        }
+	    });
+	    itemCategoryCol.setMinWidth(150);
+
+	    TableColumn<Offer, String> itemSizeCol = new TableColumn<>("Size");
+	    itemSizeCol.setCellFactory(col -> new TableCell<>() {
+	        @Override
+	        protected void updateItem(String item, boolean empty) {
+	            super.updateItem(item, empty);
+	            if (empty || getTableRow() == null) {
+	                setText(null);
+	            } else {
+	                Offer offer = getTableView().getItems().get(getIndex());
+	                String itemSize = ic.getItemSizeById(offer.getItemId());
+	                setText(itemSize);
+	            }
+	        }
+	    });
+	    itemSizeCol.setMinWidth(100);
+
+	    TableColumn<Offer, String> itemPriceCol = new TableColumn<>("Initial Price");
+	    itemPriceCol.setCellFactory(col -> new TableCell<>() {
+	        @Override
+	        protected void updateItem(String item, boolean empty) {
+	            super.updateItem(item, empty);
+	            if (empty || getTableRow() == null) {
+	                setText(null);
+	            } else {
+	                Offer offer = getTableView().getItems().get(getIndex());
+	                String itemPrice = ic.getItemPriceById(offer.getItemId());
+	                setText(itemPrice);
+	            }
+	        }
+	    });
+	    itemPriceCol.setMinWidth(150);
+
+	    TableColumn<Offer, String> offeredPriceCol = new TableColumn<>("Offered Price");
+	    offeredPriceCol.setCellValueFactory(new PropertyValueFactory<>("offeredPrice"));
+	    offeredPriceCol.setMinWidth(150);
+
+	    table.getColumns().addAll(itemNameCol, itemCategoryCol, itemSizeCol, itemPriceCol, offeredPriceCol);
 	}
+
 	
 	private void loadData() {
-		
+	    ArrayList<Offer> offers = ic.viewOfferItem(Session.getUser().getUserId());
+	    
+	    // Group item berdasarkan nama, lalu sort berdasarkan offer price 
+	    offers.sort((o1, o2) -> {
+	        
+	    	// Sort berdasarkan nama
+	        String itemName1 = ic.getItemNameById(o1.getItemId());
+	        String itemName2 = ic.getItemNameById(o2.getItemId());
+	        int nameComparison = itemName1.compareToIgnoreCase(itemName2);
+
+	        if (nameComparison != 0) {
+	            return nameComparison;
+	        }
+
+	        // Jika namanya sama, maka sort berdasarkan harga
+	        int price1 = Integer.parseInt(o1.getOfferedPrice());
+	        int price2 = Integer.parseInt(o2.getOfferedPrice());
+	        return Integer.compare(price1, price2);
+	    });
+
+	    table.getItems().setAll(offers);
 	}
+
+
 	
 	public void setPosition() {
 		root.setTop(title);

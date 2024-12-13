@@ -123,7 +123,7 @@ public class AdminViewRequestedItemPage {
 	}
 
 	private void loadData() {
-		table.getItems().setAll(ic.getAllPendingItems());
+		table.getItems().setAll(ic.viewRequestedItem("Pending"));
 	}
 
 	public void setPosition() {

@@ -28,7 +28,7 @@ public class HomePage implements EventHandler<ActionEvent> {
 	private Button logoutBtn;
 
 	// Seller Buttons
-	private Button itemManageBtn, offerManageBtn, viewRejectedItemBtn, viewOfferedItemBtn;
+	private Button itemManageBtn, uploadBtn, viewRejectedItemBtn, viewOfferedItemBtn;
 
 	// Admin Buttons
 	private Button requestManageBtn;
@@ -59,7 +59,7 @@ public class HomePage implements EventHandler<ActionEvent> {
 
 		// Seller button initialization
 		itemManageBtn = new Button("Item Management Page");
-		offerManageBtn = new Button("Offer Management Page");
+		uploadBtn = new Button("Upload New Item");
 		viewRejectedItemBtn = new Button("View Rejected Item");
 		viewOfferedItemBtn = new Button("View Offered Item");
 
@@ -88,11 +88,11 @@ public class HomePage implements EventHandler<ActionEvent> {
 		if (Session.getUser() != null) {
 			// Buyer yang login
 			if (Session.getUser().getRole().equals("Buyer"))
-				navbar.getChildren().add(wishlistBtn);
+				navbar.getChildren().addAll(wishlistBtn);
 
 			// Seller yang login
 			else if (Session.getUser().getRole().equals("Seller"))
-				navbar.getChildren().addAll(itemManageBtn, offerManageBtn, viewRejectedItemBtn, viewOfferedItemBtn);
+				navbar.getChildren().addAll(itemManageBtn, uploadBtn, viewRejectedItemBtn, viewOfferedItemBtn);
 
 			
 		}// Admin yang login
@@ -131,12 +131,12 @@ public class HomePage implements EventHandler<ActionEvent> {
 		viewRejectedItemBtn.setOnAction(e -> handle(e));
 		viewOfferedItemBtn.setOnAction(e -> handle(e));
 		itemManageBtn.setOnAction(e -> handle(e));
+		uploadBtn.setOnAction(e -> handle(e));
 
 		// Buyer Event
 		makeOfferBtn.setOnAction(e -> handle(e));
 		purchaseBtn.setOnAction(e -> handle(e));
 		addToWishlistBtn.setOnAction(e -> handle(e));
-
 	}
 
 	@Override
@@ -145,19 +145,18 @@ public class HomePage implements EventHandler<ActionEvent> {
 		if (event.getSource() == logoutBtn) {
 			// Log Out
 			System.out.println("Log Out");
+			Session.clearSession();
 			Main.redirect(new LoginPage().scene);
 		}
 
+		// Buyer Event
+
+		
 		// Admin Event
 		if (event.getSource() == requestManageBtn) {
 			// Admin Manage Pending Item
 			System.out.println("Go to Admin Approval Page");
 			Main.redirect(new AdminViewRequestedItemPage().scene);
-		}
-
-		// Buyer Event
-		if (event.getSource() == makeOfferBtn) {
-			// Buyer Make Offer for an Item
 		}
 
 		// Seller Event
@@ -177,6 +176,10 @@ public class HomePage implements EventHandler<ActionEvent> {
 			System.out.println("Go to Seller Offered Item Page");
 			Main.redirect(new SellerOfferedItem().scene);
 		}
+	 	if(event.getSource() == uploadBtn) {
+    		System.out.println("Upload Button Terpencet");
+    		Main.redirect(new UploadItemPage().scene);
+    	}
 	}
 
 	// Method untuk menampilkan item dan membuat satu card untuk setiap item
@@ -202,8 +205,7 @@ public class HomePage implements EventHandler<ActionEvent> {
 		Label categoryLabel = new Label("Category: " + item.getItemCategory());
 
 		card.setPadding(new Insets(15));
-		card.setStyle(
-				"-fx-border-color: lightgray; -fx-border-radius: 10px; -fx-background-color: #f9f9f9; -fx-background-radius: 10px;");
+		card.setStyle("-fx-border-color: lightgray; -fx-border-radius: 10px; -fx-background-color: #f9f9f9; -fx-background-radius: 10px;");
 		card.setAlignment(Pos.CENTER_LEFT);
 		card.setPrefHeight(200);
 		card.setFillWidth(false);
@@ -215,7 +217,7 @@ public class HomePage implements EventHandler<ActionEvent> {
 
 		card.getChildren().addAll(nameLabel, sizeLabel, priceLabel, categoryLabel);
 
-		// Tambah tombol "Make Offer" jika user adalah Buyer
+		// Tambah tombol "Make Offer", "Purchase", dan "Add to WishList" jika user adalah Buyer
 		if (Session.getUser() != null && Session.getUser().getRole().equals("Buyer")) {
 			Button makeOfferBtn = new Button("Make Offer");
 			Button purchaseBtn = new Button("Purchase");
@@ -223,7 +225,11 @@ public class HomePage implements EventHandler<ActionEvent> {
 			HBox buttons = new HBox(2);
 			card.setPadding(new Insets(10));
 			buttons.getChildren().addAll(purchaseBtn, makeOfferBtn, addToWishlistBtn);
-
+			
+			makeOfferBtn.setOnAction(e -> {
+				Main.redirect(new BuyerMakeOfferPage(item).scene);
+			});
+			
 			card.getChildren().add(buttons);
 		}
 

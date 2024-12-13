@@ -22,7 +22,7 @@ public class Main extends Application{
 	public static void redirect(Scene redirectScene) {
 		stage.setScene(redirectScene);
 		stage.centerOnScreen();
-		stage.setResizable(false);
+//		stage.setResizable(false);
 		stage.show();
 	}
 
