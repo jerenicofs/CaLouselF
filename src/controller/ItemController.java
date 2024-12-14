@@ -10,6 +10,7 @@ import database.DatabaseConnection;
 import model.Item;
 import model.Offer;
 import model.Reason_log;
+import model.Transaction;
 import util.Session;
 
 public class ItemController {
@@ -82,6 +83,7 @@ public class ItemController {
 		return reasons;
 	}
 
+	// Method tambahan untuk fetch semua offers yang ada
 	public ArrayList<Offer> getAllOffers() {
 		ArrayList<Offer> offers = new ArrayList<>();
 
@@ -102,6 +104,26 @@ public class ItemController {
 		return offers;
 	}
 
+	// Method tambahan untuk fetch semua transactions yang ada
+	public ArrayList<Transaction> getAllTransactions(){
+		ArrayList<Transaction> transactions = new ArrayList<>();
+
+		String query = "SELECT * from transactions";
+		PreparedStatement ps = db.prepareStatement(query);
+
+		try {
+			db.rs = ps.executeQuery();
+
+			while (db.rs != null && db.rs.next()) {
+				transactions.add(new Transaction(db.rs.getString("userId"), db.rs.getString("itemId"), db.rs.getString("transactionId")));
+			}
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		return transactions;
+	}
+	
 	// Method wajib: Method bagi seller untuk upload barang baru
 	public void uploadItem(String name, String cat, String size, String price) {
 		String query = "INSERT INTO items (itemId, itemName, itemSize, itemPrice, itemCategory, itemStatus, itemWishlist, itemOfferStatus, userId)"
@@ -350,14 +372,112 @@ public class ItemController {
 	}
 	
 
-	// Method wajib
-	public void acceptOffer(String itemId) {
+	// Method wajib: Method bagi admin untuk melakukan accept terhadap offer yang ada
+	// Ditambahkan parameter userId untuk mendapatkan id dari buyer yang melakukan offer
+	public void acceptOffer(String userId, String itemId) {
+		
+		// Setelah offer di accept, buat transaksi baru 
+		String query = "INSERT INTO transactions (userId, itemId, transactionId)" + "VALUES(?, ?, ?)";
+		String tId = generateTransactionId();
+		PreparedStatement ps = db.prepareStatement(query);
+		
+		try {
+			ps.setString(1, userId);
+			ps.setString(2, itemId);
+			ps.setString(3, tId);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+//		// Remove item dari database items 
+//		deleteItemByItemId(itemId);
+		
+		// Remove item dari database offers
+		deleteOfferByItemId(itemId);
+		
+		// Remove item dari database whishlists
+		deletewishlistByItemId(itemId);
+	}
+	
+	// Method tambahan untuk delete items berdasarkan itemId
+	public void deleteItemByItemId(String itemId) {
+		String delQuery = "DELETE FROM items WHERE itemId = ?";
+		PreparedStatement dps = db.prepareStatement(delQuery);
+		try {
+			dps.setString(1, itemId);
+			dps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	// Method tambahan untuk delete offer berdasarkan itemId
+	public void deleteOfferByItemId(String itemId) {
+		String offQuery = "DELETE FROM offers WHERE itemId = ?";
+		PreparedStatement ops = db.prepareStatement(offQuery);
+		try {
+			ops.setString(1, itemId);
+			ops.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	// Method tambahan untuk delete wishlist berdasarkan itemId
+	public void deletewishlistByItemId(String itemId) {
+		String wQuery = "DELETE FROM wishlists WHERE itemId = ?";
+		PreparedStatement wps = db.prepareStatement(wQuery);
+		try {
+			wps.setString(1, itemId);
+			wps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String generateTransactionId() {
+		String id = "";
+		ArrayList<Transaction> transactions = new ArrayList<>();
+		transactions = getAllTransactions();
 
+		Random rand = new Random();
+		boolean isUnique = true;
+		while (true) {
+			int rand1 = rand.nextInt(9) + 1;
+			int rand2 = rand.nextInt(10);
+			int rand3 = rand.nextInt(10);
+			id = String.format("T%d%d%d", rand1, rand2, rand3);
+
+			for (Transaction x : transactions) {
+				if (x.getTransactionId().equals(id)) {
+					isUnique = false;
+					break;
+				}
+			}
+			if (isUnique)
+				break;
+
+		}
+		return id;
 	}
 
-	// Method wajib
+	// Method wajib: Bagi seller untuk melakukan decline offer
 	public void declineOffer(String itemId) {
-
+		
+		// Remove item dari database offers
+		deleteOfferByItemId(itemId);
+		
+	}
+	
+	// Method tambahan bagi seller untuk validasi decline reason
+	public int validateDecline(String reason, String itemId) {
+		if(reason.isEmpty()) return -1;
+		
+		// Kalau validasi berhasil terpenuhi
+		declineOffer(itemId);
+		
+		return 1;
 	}
 
 	// Method wajib: untuk meng-approve item oleh admin
@@ -385,9 +505,32 @@ public class ItemController {
 		}
 	}
 
-	// Method wajib
-	public void viewAcceptedItem(String itemId) {
-
+	// Method wajib: Bagi buyer untuk fetch item berdasarkan itemId
+	public Item viewAcceptedItem(String itemId) {
+		String query = "SELECT * FROM items WHERE itemId = ?";
+	    PreparedStatement ps = db.prepareStatement(query);
+	    Item item = null;
+	    try {
+			ps.setString(1, itemId);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+	            item = new Item(
+	                rs.getString("itemId"),
+	                rs.getString("itemName"),
+	                rs.getString("itemSize"),
+	                rs.getString("itemPrice"),
+	                rs.getString("itemCategory"),
+	                rs.getString("itemStatus"),
+	                rs.getString("itemWishlist"),
+	                rs.getString("itemOfferStatus"),
+	                rs.getString("userId")
+	            );
+	        }
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	    return item;
 	}
 
 	// Method wajib: Method untuk seller untuk melihat semua offer price request dari buyer
@@ -449,6 +592,7 @@ public class ItemController {
 	    return offers;
 	}
 
+	// Method tambahan untuk fetch itemName berdasarkan itemId
 	public String getItemNameById(String itemId) {
 		String query = "SELECT itemName FROM items WHERE itemId = ?";
 	    PreparedStatement prepQuery = db.prepareStatement(query);
@@ -464,6 +608,7 @@ public class ItemController {
 	    return "";
 	}
 	
+	// Method tambahan untuk fetch itemCategory berdasarkan itemId
 	public String getItemCategoryById(String itemId) {
 		String query = "SELECT itemCategory FROM items WHERE itemId = ?";
 	    PreparedStatement prepQuery = db.prepareStatement(query);
@@ -479,6 +624,7 @@ public class ItemController {
 	    return "";
 	}
 	
+	// Method tambahan untuk fetch itemSize berdasarkan itemId
 	public String getItemSizeById(String itemId) {
 		String query = "SELECT itemSize FROM items WHERE itemId = ?";
 	    PreparedStatement prepQuery = db.prepareStatement(query);
@@ -494,6 +640,7 @@ public class ItemController {
 	    return "";
 	}
 	
+	// Method tambahan untuk fetch itemPrice berdasarkan itemId
 	public String getItemPriceById(String itemId) {
 	    String query = "SELECT itemPrice FROM items WHERE itemId = ?";
 	    PreparedStatement prepQuery = db.prepareStatement(query);

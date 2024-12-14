@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
@@ -17,7 +18,7 @@ import javafx.scene.layout.GridPane;
 import model.Offer;
 import util.Session;
 
-public class SellerOfferedItem {
+public class SellerOfferedItemPage {
 	private BorderPane root;
 	private GridPane grid;
 	public Scene scene;
@@ -27,7 +28,7 @@ public class SellerOfferedItem {
 	private TableView<Offer> table;
 
 	
-	public SellerOfferedItem() {
+	public SellerOfferedItemPage() {
 		ic = new ItemController();
 		init();
 		event();
@@ -120,7 +121,39 @@ public class SellerOfferedItem {
 	    offeredPriceCol.setCellValueFactory(new PropertyValueFactory<>("offeredPrice"));
 	    offeredPriceCol.setMinWidth(150);
 
-	    table.getColumns().addAll(itemNameCol, itemCategoryCol, itemSizeCol, itemPriceCol, offeredPriceCol);
+	    TableColumn<Offer, Void> actionsCol = new TableColumn<>("Actions");
+	    actionsCol.setCellFactory(col -> new TableCell<>() {
+	        Button acceptBtn = new Button("Accept");
+	        Button declineBtn = new Button("Decline");
+
+	        {
+	            acceptBtn.setOnAction(event -> {
+	                Offer offer = getTableView().getItems().get(getIndex());
+	                ic.acceptOffer(offer.getUserId() ,offer.getItemId());
+	                showSuccess("Accept Offer Success", "A new transaction has been made!");
+	                loadData();
+	            });
+
+	            declineBtn.setOnAction(event -> {
+	                Offer offer = getTableView().getItems().get(getIndex());
+	                getTableView().getItems().remove(offer);
+	                Main.redirect(new SellerDeclineOfferItemPage(offer).scene);
+	            });
+	        }
+
+	        @Override
+	        protected void updateItem(Void item, boolean empty) {
+	            super.updateItem(item, empty);
+	            if (empty) {
+	                setGraphic(null);
+	            } else {
+	                setGraphic(new javafx.scene.layout.HBox(10, acceptBtn, declineBtn));
+	            }
+	        }
+	    });
+	    actionsCol.setMinWidth(200);
+
+	    table.getColumns().addAll(itemNameCol, itemCategoryCol, itemSizeCol, itemPriceCol, offeredPriceCol, actionsCol);
 	}
 
 	
@@ -179,5 +212,20 @@ public class SellerOfferedItem {
 		title.setStyle("-fx-font-size: 36px;");
 	}
 	
+	public void showAlert(String title, String errorMessage) {
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setTitle(title);
+		alert.setHeaderText(null);
+		alert.setContentText(errorMessage);
+		alert.showAndWait();
+	}
+	
+	public void showSuccess(String title, String message) {
+	    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+	    alert.setTitle(title);
+	    alert.setHeaderText(null);
+	    alert.setContentText(message);
+	    alert.showAndWait();
+	}
 	
 }

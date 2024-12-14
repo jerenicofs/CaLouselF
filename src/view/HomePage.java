@@ -3,11 +3,13 @@ package view;
 import java.util.ArrayList;
 
 import controller.ItemController;
+import controller.TransactionController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -34,9 +36,10 @@ public class HomePage implements EventHandler<ActionEvent> {
 	private Button requestManageBtn;
 
 	// Buyer Buttons
-	private Button purchaseBtn, makeOfferBtn, addToWishlistBtn, wishlistBtn;
+	private Button wishlistBtn, viewHistoryBtn;
 
 	private ItemController ic;
+	private TransactionController tc;
 
 	public Scene scene;
 
@@ -51,6 +54,7 @@ public class HomePage implements EventHandler<ActionEvent> {
 
 	public void init() {
 		ic = new ItemController();
+		tc = new TransactionController();
 
 		frame = new BorderPane();
 		title = new Label("Home Page");
@@ -67,10 +71,8 @@ public class HomePage implements EventHandler<ActionEvent> {
 		requestManageBtn = new Button("Request Item Management Page");
 
 		// Buyer button initialization
-		purchaseBtn = new Button("Purchase");
-		makeOfferBtn = new Button("Make Offer");
-		addToWishlistBtn = new Button("Add to wishlist");
 		wishlistBtn = new Button("View Wishlist");
+		viewHistoryBtn = new Button("View Purchase History");
 
 		navbar = new HBox();
 		header = new VBox();
@@ -88,7 +90,7 @@ public class HomePage implements EventHandler<ActionEvent> {
 		if (Session.getUser() != null) {
 			// Buyer yang login
 			if (Session.getUser().getRole().equals("Buyer"))
-				navbar.getChildren().addAll(wishlistBtn);
+				navbar.getChildren().addAll(wishlistBtn, viewHistoryBtn);
 
 			// Seller yang login
 			else if (Session.getUser().getRole().equals("Seller"))
@@ -134,9 +136,8 @@ public class HomePage implements EventHandler<ActionEvent> {
 		uploadBtn.setOnAction(e -> handle(e));
 
 		// Buyer Event
-		makeOfferBtn.setOnAction(e -> handle(e));
-		purchaseBtn.setOnAction(e -> handle(e));
-		addToWishlistBtn.setOnAction(e -> handle(e));
+		wishlistBtn.setOnAction(e -> handle(e));
+		viewHistoryBtn.setOnAction(e -> handle(e));
 	}
 
 	@Override
@@ -150,7 +151,12 @@ public class HomePage implements EventHandler<ActionEvent> {
 		}
 
 		// Buyer Event
-
+		if(event.getSource() == wishlistBtn) {
+			Main.redirect(new BuyerViewWishlistPage().scene);
+		}
+		else if(event.getSource() == viewHistoryBtn) {
+			Main.redirect(new BuyerViewPurchaseHistoryPage().scene);
+		}
 		
 		// Admin Event
 		if (event.getSource() == requestManageBtn) {
@@ -174,7 +180,7 @@ public class HomePage implements EventHandler<ActionEvent> {
 		if (event.getSource() == viewOfferedItemBtn) {
 			// Seller View Offered Item
 			System.out.println("Go to Seller Offered Item Page");
-			Main.redirect(new SellerOfferedItem().scene);
+			Main.redirect(new SellerOfferedItemPage().scene);
 		}
 	 	if(event.getSource() == uploadBtn) {
     		System.out.println("Upload Button Terpencet");
@@ -221,19 +227,61 @@ public class HomePage implements EventHandler<ActionEvent> {
 		if (Session.getUser() != null && Session.getUser().getRole().equals("Buyer")) {
 			Button makeOfferBtn = new Button("Make Offer");
 			Button purchaseBtn = new Button("Purchase");
-			Button addToWishlistBtn = new Button("Add to Wish List");
 			HBox buttons = new HBox(2);
 			card.setPadding(new Insets(10));
-			buttons.getChildren().addAll(purchaseBtn, makeOfferBtn, addToWishlistBtn);
+			buttons.getChildren().addAll(purchaseBtn, makeOfferBtn);
 			
 			makeOfferBtn.setOnAction(e -> {
 				Main.redirect(new BuyerMakeOfferPage(item).scene);
 			});
 			
+			purchaseBtn.setOnAction(e -> showPurchaseConfirmation(item));
+			
+			
 			card.getChildren().add(buttons);
+			
+			card.setOnMouseEntered(event -> card.setStyle("-fx-border-color: lightgray; -fx-border-radius: 10px; -fx-background-color: #f0f0f0; -fx-background-radius: 10px; -fx-cursor: hand;"));
+	        card.setOnMouseExited(event -> card.setStyle("-fx-border-color: lightgray; -fx-border-radius: 10px; -fx-background-color: #f9f9f9; -fx-background-radius: 10px;"));
 		}
+		
+		card.setOnMouseClicked(event -> {
+	        if (Session.getUser() != null && Session.getUser().getRole().equals("Buyer")) {
+	            Main.redirect(new BuyerViewAcceptedItemPage(item.getItemId()).scene);
+	        }
+	    });
 
 		return card;
+	}
+	
+	private void showPurchaseConfirmation(Item item) {
+	    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, 
+	        "Are you sure you want to purchase this item?", 
+	        javafx.scene.control.ButtonType.YES, 
+	        javafx.scene.control.ButtonType.NO);
+	    
+	    alert.setTitle("Confirm Purchase");
+	    alert.setHeaderText(null);
+
+	    alert.showAndWait().ifPresent(response -> {
+	        if (response == javafx.scene.control.ButtonType.YES) {
+	            tc.purchaseItems(Session.getUser().getUserId(), item.getItemId());
+	            showSuccess("Purchase Successful", "You have successfully purchased the item!");
+	            refreshCard();
+	        }
+	    });
+	}
+	
+	private void refreshCard() {
+	    container.getChildren().clear(); 
+	    loadItems();                     
+	}
+	
+	public void showSuccess(String title, String message) {
+	    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+	    alert.setTitle(title);
+	    alert.setHeaderText(null);
+	    alert.setContentText(message);
+	    alert.showAndWait();
 	}
 
 }

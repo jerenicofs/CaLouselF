@@ -128,7 +128,7 @@ public class UploadItemPage {
 				ic.uploadItem(nameField.getText(), catField.getText(), sizeField.getText(),
 					priceField.getText());
 				System.out.println("Berhasil Upload");
-				Main.redirect(new SellerItemsPage().scene);
+				Main.redirect(new HomePage().scene);
 			}
 
 		} else if (event.getSource() == backBtn) {
