@@ -2,6 +2,7 @@ package view;
 
 import controller.ItemController;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,7 +12,7 @@ import javafx.scene.layout.*;
 import model.Item;
 import model.Offer;
 
-public class SellerItemsPage{
+public class SellerItemsPage implements EventHandler<ActionEvent>{
 	private BorderPane root;
     private GridPane grid;
     public Scene scene;
@@ -144,6 +145,7 @@ public class SellerItemsPage{
     	backBtn.setOnAction(e -> handle(e));
     }
     
+    @Override
     public void handle(ActionEvent event) {
   
     	if (event.getSource() == backBtn) {

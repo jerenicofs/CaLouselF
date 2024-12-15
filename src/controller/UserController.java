@@ -154,7 +154,4 @@ public class UserController {
 		return id;
 	}
 	
-	public void logout() {
-		Session.clearSession();
-	}
 }

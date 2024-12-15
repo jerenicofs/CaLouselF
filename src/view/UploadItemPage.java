@@ -2,12 +2,17 @@ package view;
 
 import controller.ItemController;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 
-public class UploadItemPage {
+public class UploadItemPage implements EventHandler<ActionEvent>{
 	private BorderPane root;
 	private GridPane grid;
 	public Scene scene;
@@ -75,6 +80,7 @@ public class UploadItemPage {
 		backBtn.setOnAction(e -> handle(e));
 	}
 	
+	@Override
 	public void handle(ActionEvent event) {
 		if (event.getSource() == submitBtn) {
 			double res;

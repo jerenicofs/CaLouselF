@@ -2,6 +2,7 @@ package view;
 
 import controller.ItemController;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -17,7 +18,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import model.Item;
 
-public class AdminViewRequestedItemPage {
+public class AdminViewRequestedItemPage implements EventHandler<ActionEvent>{
 	private BorderPane root;
 	private GridPane grid;
 	public Scene scene;
@@ -144,7 +145,8 @@ public class AdminViewRequestedItemPage {
 	public void event() {
 		backBtn.setOnAction(e -> handle(e));
 	}
-
+	
+	@Override
 	public void handle(ActionEvent event) {
 		if (event.getSource() == backBtn) {
 			Main.redirect(new HomePage().scene);

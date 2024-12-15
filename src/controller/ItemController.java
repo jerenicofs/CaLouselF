@@ -180,7 +180,6 @@ public class ItemController {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		getAllItemsbyUser();
 	}
 
 	// Method Tambahan buat generate random unique itemId

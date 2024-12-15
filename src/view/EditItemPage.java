@@ -2,6 +2,7 @@ package view;
 
 import controller.ItemController;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -12,7 +13,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import model.Item;
 
-public class EditItemPage {
+public class EditItemPage implements EventHandler<ActionEvent>{
 	private BorderPane root;
 	private GridPane grid;
 	public Scene scene;
@@ -76,7 +77,8 @@ public class EditItemPage {
 		updateBtn.setOnAction(e -> handle(e));
 		backBtn.setOnAction(e -> handle(e));
 	}
-
+	
+	@Override
 	public void handle(ActionEvent event) {
 		if (event.getSource() == updateBtn) {
 			double res;
