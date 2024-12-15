@@ -3,6 +3,7 @@ package view;
 import java.util.ArrayList;
 
 import controller.UserController;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -26,7 +27,7 @@ public class LoginPage implements EventHandler<ActionEvent> {
 	private Label title, usernameLabel, passwordLabel;
 	private TextField usernameField;
 	private PasswordField passwordField;
-	private Button registerBtn, loginBtn;
+	private Button registerBtn, loginBtn, exitBtn;
 	private UserController uc;
 	private ArrayList<User> users;
 	
@@ -53,6 +54,7 @@ public class LoginPage implements EventHandler<ActionEvent> {
 		passwordField = new PasswordField();
 		registerBtn = new Button("Register");
 		loginBtn = new Button("Login");
+		exitBtn = new Button("Exit");
 		hbButton = new HBox();
 		
 		uc = new UserController();	
@@ -68,7 +70,7 @@ public class LoginPage implements EventHandler<ActionEvent> {
 		usernameField.setPrefWidth(300);
 		passwordField.setPrefWidth(300);
 		
-		hbButton.getChildren().addAll(registerBtn, loginBtn);
+		hbButton.getChildren().addAll(registerBtn, loginBtn, exitBtn);
 		hbButton.setSpacing(10);
 		hbButton.setAlignment(Pos.CENTER);
 		
@@ -100,6 +102,7 @@ public class LoginPage implements EventHandler<ActionEvent> {
 	public void events() {
 		loginBtn.setOnAction(e -> handle(e));
 		registerBtn.setOnAction(e -> handle(e));
+		exitBtn.setOnAction(e->handle(e));
 	}
 	@Override
 	public void handle(ActionEvent event) {
@@ -137,6 +140,10 @@ public class LoginPage implements EventHandler<ActionEvent> {
 		// Handle Register Button
 		else if(event.getSource() == registerBtn) {
 			Main.redirect(new RegisterPage().scene);
+		}
+		else if(event.getSource() == exitBtn) {
+			showAlert("Bye Bye", "Bertrand Will Miss You :(");
+			Platform.exit();
 		}
 		
 	}

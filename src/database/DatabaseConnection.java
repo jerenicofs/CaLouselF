@@ -37,7 +37,7 @@ public class DatabaseConnection {
 	
 	private DatabaseConnection() {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 			con = DriverManager.getConnection(CONNECTION, USERNAME, PASSWORD);
 			st = con.createStatement();
 		} catch (Exception e) {

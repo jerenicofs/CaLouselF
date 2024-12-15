@@ -9,6 +9,7 @@ import java.util.Random;
 import database.DatabaseConnection;
 import model.Item;
 import model.Offer;
+import model.Offer_Log;
 import model.Reason_log;
 import model.Transaction;
 import util.Session;
@@ -304,6 +305,32 @@ public class ItemController {
 		return items;
 	}
 	
+	public ArrayList<Offer_Log> getAllOfferLog(String userId) {
+		ArrayList<Offer_Log> offerLog = new ArrayList<>();
+		String query = "SELECT * FROM offer_logs WHERE userId = ?";
+		PreparedStatement prepQuery = db.prepareStatement(query);
+		try {
+			prepQuery.setString(1, userId);
+			db.rs = prepQuery.executeQuery();
+			while (db.rs != null && db.rs.next()) {
+				if(!db.rs.getString("reasonText").isEmpty()) {
+					offerLog.add(new Offer_Log(db.rs.getString("offer_logId"), db.rs.getString("userId"), db.rs.getString("itemName"),
+							db.rs.getString("itemSize"), db.rs.getString("itemPrice"), db.rs.getString("itemCategory"),
+							db.rs.getString("itemOfferPrice"), db.rs.getString("reasonText")));
+				}else {
+					offerLog.add(new Offer_Log(db.rs.getString("offer_logId"), db.rs.getString("userId"), db.rs.getString("itemName"),
+							db.rs.getString("itemSize"), db.rs.getString("itemPrice"), db.rs.getString("itemCategory"),
+							db.rs.getString("itemOfferPrice"), "Pending"));
+				}
+				
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return offerLog;
+	}
+	
 	// Method wajib: Buyer bisa melakukan offer price baru
 	public void offerPrice(String itemId, String itemPrice) {
 		String query = "Insert into offers (offerId, itemId, userId, offeredPrice, status)" + "VALUES(?, ?, ?, ?, ?)";
@@ -470,17 +497,18 @@ public class ItemController {
 	}
 	
 	// Method tambahan bagi seller untuk validasi decline reason
-	public int validateDecline(String reason, String itemId) {
+	public int validateDecline(Offer o, String reason, String itemId) {
 		if(reason.isEmpty()) return -1;
 		
 		// Kalau validasi berhasil terpenuhi
+		addOffer_Log(o, reason);
 		declineOffer(itemId);
 		
 		return 1;
 	}
 
 	// Method wajib: untuk meng-approve item oleh admin
-	public void ApproveItem(String itemId) {
+	public void approveItem(String itemId) {
 		String query = "UPDATE items SET itemStatus = 'Approved' WHERE itemId = ?";
 		PreparedStatement ps = db.prepareStatement(query);
 		try {
@@ -491,17 +519,15 @@ public class ItemController {
 		}
 	}
 
-	// Method wajib: untuk mendecline item oleh admin
-	public void DeclineItem(String itemId) {
-		String query = "SELECT * FROM items WHERE itemId = ?";
-		PreparedStatement ps = db.prepareStatement(query);
-		try {
-			ps.setString(1, itemId);
-			ResultSet rs = ps.executeQuery();
-		} catch (SQLException e) {
-
-			e.printStackTrace();
+	// Method wajib: untuk mendecline (reject) item oleh admin
+	//Notes: Parameternya diganti dengan objek Item dan text validasi
+	public int declineItem(Item item, String text) {
+		if (text.isBlank()) {
+			return -1;
 		}
+		addReason_Log(item, text);
+		deleteItem(item.getItemId());
+		return 1;
 	}
 
 	// Method wajib: Bagi buyer untuk fetch item berdasarkan itemId
@@ -657,7 +683,7 @@ public class ItemController {
 	
 
 	// Method tambahan untuk dapet reason_logId terakhir
-	public String getLastId() {
+	public String getLastReasonLogId() {
 		String query = "SELECT reason_logId FROM reason_logs ORDER BY reason_logId DESC LIMIT 1";
 		PreparedStatement ps = db.prepareStatement(query);
 		try {
@@ -676,7 +702,7 @@ public class ItemController {
 
 	// Method tambahan untuk generate reason_logId baru
 	public String generateNewReasonLogId() {
-		String lastId = getLastId();
+		String lastId = getLastReasonLogId();
 		String numberId = lastId.substring(1);
 		try {
 			int num = Integer.parseInt(numberId);
@@ -688,13 +714,6 @@ public class ItemController {
 		return "R001";
 	}
 
-	// Method tambahan untuk validasi reason (tidak boleh blank)
-	public int validateReason(String text) {
-		if (text.isBlank()) {
-			return -1;
-		}
-		return 1;
-	}
 
 	// Method tambahan untuk buat reason_log baru
 	public void addReason_Log(Item i, String reasonText) {
@@ -715,6 +734,78 @@ public class ItemController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void addOffer_Log(Offer o, String reasonText) {
+	    String query = "SELECT * FROM items WHERE itemId = ?";
+	    PreparedStatement ps = db.prepareStatement(query);
+	    Item i = null;
+	    try {
+	        ps.setString(1, o.getItemId());
+	        ResultSet rs = ps.executeQuery();
+	        if (rs.next()) {
+	            i = new Item(
+	                rs.getString("itemId"),
+	                rs.getString("itemName"),
+	                rs.getString("itemSize"),
+	                rs.getString("itemPrice"),
+	                rs.getString("itemCategory"),
+	                rs.getString("itemStatus"),
+	                rs.getString("itemWishlist"),
+	                rs.getString("itemOfferStatus"),
+	                rs.getString("userId")
+	            );
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }    
+		query = "INSERT INTO offer_logs (offer_logId, userId, itemName, itemSize, itemPrice, itemCategory, itemOfferPrice, reasonText)"
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+		PreparedStatement psQuery = db.prepareStatement(query);
+		String offer_LogId = generateNewOfferLogId();
+		try {
+			psQuery.setString(1, offer_LogId);
+			psQuery.setString(2, o.getUserId());
+			psQuery.setString(3, i.getItemName());
+			psQuery.setString(4, i.getItemSize());
+			psQuery.setString(5, i.getItemPrice());
+			psQuery.setString(6, i.getItemCategory());
+			psQuery.setString(7, o.getOfferedPrice());
+			psQuery.setString(8, reasonText);
+			psQuery.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String getLastOfferLogId() {
+		String query = "SELECT offer_logId FROM offer_logs ORDER BY offer_logId DESC LIMIT 1";
+		PreparedStatement ps = db.prepareStatement(query);
+		try {
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				return rs.getString("offer_logId");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return "OL000";
+
+	}
+	
+	public String generateNewOfferLogId() {
+		String lastId = getLastOfferLogId();
+		String numberId = lastId.substring(2);
+		try {
+			int num = Integer.parseInt(numberId);
+			num++;
+			return String.format("OL%03d", num);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "OL001";
 	}
 
 }

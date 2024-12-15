@@ -89,7 +89,7 @@ public class SellerDeclineOfferItemPage implements EventHandler<ActionEvent>{
 	@Override
 	public void handle(ActionEvent event) {
 		if(event.getSource() == declineBtn) {
-			int res = ic.validateDecline(declineField.getText(), offer.getItemId());
+			int res = ic.validateDecline(offer,declineField.getText(), offer.getItemId());
 			
 			if(res == -1) {
 				showAlert("Reason Invalid", "Reason cannot be empty!"); return;

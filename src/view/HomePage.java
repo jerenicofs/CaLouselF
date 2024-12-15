@@ -36,7 +36,7 @@ public class HomePage implements EventHandler<ActionEvent> {
 	private Button requestManageBtn;
 
 	// Buyer Buttons
-	private Button wishlistBtn, viewHistoryBtn;
+	private Button wishlistBtn, viewHistoryBtn, viewOfferLog;
 
 	private ItemController ic;
 	private TransactionController tc;
@@ -73,6 +73,7 @@ public class HomePage implements EventHandler<ActionEvent> {
 		// Buyer button initialization
 		wishlistBtn = new Button("View Wishlist");
 		viewHistoryBtn = new Button("View Purchase History");
+		viewOfferLog = new Button("View Your Offer Log");
 
 		navbar = new HBox();
 		header = new VBox();
@@ -90,7 +91,7 @@ public class HomePage implements EventHandler<ActionEvent> {
 		if (Session.getUser() != null) {
 			// Buyer yang login
 			if (Session.getUser().getRole().equals("Buyer"))
-				navbar.getChildren().addAll(wishlistBtn, viewHistoryBtn);
+				navbar.getChildren().addAll(wishlistBtn, viewHistoryBtn, viewOfferLog);
 
 			// Seller yang login
 			else if (Session.getUser().getRole().equals("Seller"))
@@ -138,6 +139,7 @@ public class HomePage implements EventHandler<ActionEvent> {
 		// Buyer Event
 		wishlistBtn.setOnAction(e -> handle(e));
 		viewHistoryBtn.setOnAction(e -> handle(e));
+		viewOfferLog.setOnAction(e ->handle(e));
 	}
 
 	@Override
@@ -154,8 +156,11 @@ public class HomePage implements EventHandler<ActionEvent> {
 		if(event.getSource() == wishlistBtn) {
 			Main.redirect(new BuyerViewWishlistPage().scene);
 		}
-		else if(event.getSource() == viewHistoryBtn) {
+		if(event.getSource() == viewHistoryBtn) {
 			Main.redirect(new BuyerViewPurchaseHistoryPage().scene);
+		}
+		if(event.getSource() == viewOfferLog) {
+			Main.redirect(new BuyerViewOfferLog().scene);
 		}
 		
 		// Admin Event

@@ -9,7 +9,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import model.Item;
@@ -75,19 +74,15 @@ public class AdminReasonRejectPage implements EventHandler<ActionEvent> {
 	public void handle(ActionEvent event) {
 		if (event.getSource() == submitBtn) {
 			int res;
-			res= ic.validateReason(reasonField.getText());
+			res= ic.declineItem(item,reasonField.getText());
 			// Item Name validation
 			if (res < 0) {
 				showAlert("Invalid Reasons", "Reasons can't be empty.");
 				return;
-
 			}
 			else {
-
 				showSuccess("Success", "Item " + item.getItemName() + " has been rejected");
-				ic.addReason_Log(item, reasonField.getText());
 				System.out.println("Create Reject_Log Success");
-				ic.deleteItem(item.getItemId());
 				Main.redirect(new AdminViewRequestedItemPage().scene);
 			}
 
