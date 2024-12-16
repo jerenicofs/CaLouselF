@@ -34,7 +34,7 @@ public class UserController {
 
 	}
 	
-	// Method untuk cek validasi login
+	// Method wajib: Untuk cek validasi login
 	public int login(String username, String password) {
 
 		if(username.isEmpty()) return -1;

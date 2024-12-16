@@ -189,13 +189,13 @@ public class HomePage implements EventHandler<ActionEvent> {
 		}
 	 	if(event.getSource() == uploadBtn) {
     		System.out.println("Upload Button Terpencet");
-    		Main.redirect(new UploadItemPage().scene);
+    		Main.redirect(new SellerUploadItemPage().scene);
     	}
 	}
 
 	// Method untuk menampilkan item dan membuat satu card untuk setiap item
 	public void loadItems() {
-		ArrayList<Item> items = ic.getAllItems();
+		ArrayList<Item> items = ic.viewItem();
 
 		if (items.isEmpty())
 			System.out.println("NO ITEM");

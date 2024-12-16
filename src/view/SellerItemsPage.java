@@ -75,7 +75,7 @@ public class SellerItemsPage implements EventHandler<ActionEvent>{
                     Item item = getTableView().getItems().get(getIndex());
                     System.out.println("Updating item: " + item.getItemName());
                     //Bawa ke Update Page
-                    Main.redirect(new EditItemPage(item).scene);
+                    Main.redirect(new SellerEditItemPage(item).scene);
                 });
             }
 

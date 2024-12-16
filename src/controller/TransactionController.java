@@ -22,24 +22,10 @@ public class TransactionController {
 		
 		// Remove item yang telah dipurchase dari seluruh wishlist user
 		deletewishlistByItemId(itemId);
-
-//		// Remove item yang sudah dibeli
-//		deleteItemByItemId(itemId);
 		
 		// Remove item dari database offers
 		deleteOfferByItemId(itemId);
 	    
-	}
-	
-	public void deleteItemByItemId(String itemId) {
-		String delQuery = "DELETE FROM items WHERE itemId = ?";
-		PreparedStatement dps = db.prepareStatement(delQuery);
-		try {
-			dps.setString(1, itemId);
-			dps.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	// Method tambahan untuk delete offer berdasarkan itemId
@@ -66,7 +52,7 @@ public class TransactionController {
 		}
 	}
 	
-	// Method wajib
+	// Method wajib: Method untuck fetch semua transaction yang dilakukan oleh user yang sedang login.
 	public ArrayList<Transaction> viewHistory(String userId) {
 		ArrayList<Transaction> trans = new ArrayList<>();
 		String query = "SELECT * from transactions WHERE userId = ?";

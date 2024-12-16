@@ -1,9 +1,9 @@
 package model;
 
 public class Transaction {
-	private String userId;
-	private String itemId;
-	private String transactionId;
+	private String userId; // Foreign key: references users (buyer) yang melakukan transaksi ini.
+	private String itemId; // Foreign key: references item yang dibeli pada transaksi ini.
+	private String transactionId; // Unique id untuk setiap transaction.
 	
 	public Transaction(String userId, String itemId, String transactionId) {
 		super();

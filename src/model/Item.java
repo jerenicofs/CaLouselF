@@ -1,15 +1,15 @@
 package model;
 
 public class Item {
-	private String itemId;
-	private String itemName;
-	private String itemSize;
-	private String itemPrice;
-	private String itemCategory;
+	private String itemId; // unique id untuk setiap item
+	private String itemName; // nama dari item
+	private String itemSize; // ukuran dari item
+	private String itemPrice; // harga item
+	private String itemCategory; // kategori item
 	private String itemStatus; // default: Pending
-	private String itemWishlist; // default: null
-	private String itemOfferStatus; // default: null
-	private String userId;
+	private String itemWishlist; // default: null . Reference dari itemId terdapat di table wishlists
+	private String itemOfferStatus; // default: null. Statusnya terdapat di table offers
+	private String userId; // Foreign key, references users table. Menunjukkan user (seller) yang menjual item ini
 
 	public Item(String itemId, String itemName, String itemSize, String itemPrice, String itemCategory,
 			String itemStatus, String itemWishlist, String itemOfferStatus, String userId) {

@@ -142,7 +142,7 @@ public class LoginPage implements EventHandler<ActionEvent> {
 			Main.redirect(new RegisterPage().scene);
 		}
 		else if(event.getSource() == exitBtn) {
-			showAlert("Bye Bye", "Bertrand Will Miss You :(");
+			showAlert("Bye Bye", "So long ma friend :(");
 			Platform.exit();
 		}
 		

@@ -1,12 +1,12 @@
 package model;
 
+// Class tambahan untuk menyimpan offer yang dilakukan oleh buyer terhadap seller terhadap suatu item.
 public class Offer {
-
-	private String offerId;
-	private String itemId;
-	private String userId;
-	private String offeredPrice;
-	private String status; // default: Pending
+	private String offerId; // Unique id untuk setiap offer yang dilakukan.
+	private String itemId; // Foreign key: references items, menunjukkan item mana yang sedang dioffer oleh buyer.
+	private String userId; // Foreign key: references users, menunjukkan user mana yang melakukan offer.
+	private String offeredPrice; // Harga yang ditawar oleh buyer.
+	private String status; // default: Pending.
 	
 	public Offer(String offerId, String itemId, String userId, String offeredPrice, String status) {
 		super();

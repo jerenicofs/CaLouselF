@@ -51,6 +51,7 @@ public class WishlistController {
 		}
 	}
 	
+	// Method tambahan untuk mendapat id terakhir dari wishlist, yang nantinya digunakan untuk mengenerate id wishlist baru.
 	public String getLastId() {
 		String query = "SELECT wishlistId FROM wishlists ORDER BY wishlistId DESC LIMIT 1";
 		PreparedStatement ps = db.prepareStatement(query);
@@ -67,6 +68,7 @@ public class WishlistController {
 		
 	}
 	
+	// Method tambahan untuk mengenerate id wishlist baru.
 	public String generateNewWishlistId() {
 		String lastId = getLastId();
 		String numberId = lastId.substring(1);
@@ -80,7 +82,7 @@ public class WishlistController {
 		return "W001";
 	}
 	
-	// Method wajib
+	// Method wajib: Method untuk meremove wishlist dari database wishlists.
 	public void removeWishlist(String wishlistId) {
 		String query = "DELETE FROM wishlists WHERE wishlistId = ?";
 	    PreparedStatement ps = db.prepareStatement(query);

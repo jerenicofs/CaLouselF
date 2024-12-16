@@ -40,8 +40,8 @@ public class BuyerViewOfferLog implements EventHandler<ActionEvent>{
 		root = new BorderPane();
 		grid = new GridPane();
 		scene = new Scene(root, 1200, 600);
-		title = new Label("Admin Dashboard");
-		pageDesc = new Label("Here are the items waiting for approval");
+		title = new Label("Buyer Offer Log Page");
+		pageDesc = new Label("Here are the offered items waiting for approval");
 		backBtn = new Button("Back");
 		table = new TableView<>();
 		tablePlaceholder = new Label("No items waiting");
@@ -104,7 +104,6 @@ public class BuyerViewOfferLog implements EventHandler<ActionEvent>{
 
 	@Override
 	public void handle(ActionEvent event) {
-		// TODO Auto-generated method stub
 		if (event.getSource() == backBtn) {
 			Main.redirect(new HomePage().scene);
 		}

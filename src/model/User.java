@@ -2,12 +2,12 @@ package model;
 
 public class User {
 	
-	private String userId;
-	private String username;
-	private String password;
-	private String phoneNumber;
-	private String address;
-	private String role;
+	private String userId; // unique id untuk setiap user
+	private String username; // username dari user
+	private String password; // password dari user
+	private String phoneNumber; // nomor telepon dari user 
+	private String address; // alamat dari user
+	private String role; // role dari user (buyer dan seller). kalau bukan keduanya, maka admin
 	
 	public User(String userId, String username, String password, String phoneNumber, String address, String role) {
 		this.userId = userId;

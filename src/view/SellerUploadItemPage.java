@@ -12,7 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
-public class UploadItemPage implements EventHandler<ActionEvent>{
+public class SellerUploadItemPage implements EventHandler<ActionEvent>{
 	private BorderPane root;
 	private GridPane grid;
 	public Scene scene;
@@ -21,7 +21,7 @@ public class UploadItemPage implements EventHandler<ActionEvent>{
 	private ItemController ic;
 	private TextField nameField, catField, sizeField, priceField;
 	
-	public UploadItemPage() {
+	public SellerUploadItemPage() {
 		init();
 		setAlignment();
 		setStyle();
@@ -103,7 +103,7 @@ public class UploadItemPage implements EventHandler<ActionEvent>{
 					showAlert("Invalid Category", "Category can't be empty.");
 					return;
 				} else if (res == -2.2) {
-					showAlert("Invalid Category", "Category must be at least 8 character long.");
+					showAlert("Invalid Category", "Category must be at least 3 character long.");
 					return;
 				}
 			}

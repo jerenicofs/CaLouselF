@@ -13,7 +13,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import model.Item;
 
-public class EditItemPage implements EventHandler<ActionEvent>{
+public class SellerEditItemPage implements EventHandler<ActionEvent>{
 	private BorderPane root;
 	private GridPane grid;
 	public Scene scene;
@@ -101,7 +101,7 @@ public class EditItemPage implements EventHandler<ActionEvent>{
 					showAlert("Invalid Category", "Category can't be empty.");
 					return;
 				} else if (res == -2.2) {
-					showAlert("Invalid Category", "Category must be at least 8 character long.");
+					showAlert("Invalid Category", "Category must be at least 3 character long.");
 					return;
 				}
 			}
@@ -160,7 +160,7 @@ public class EditItemPage implements EventHandler<ActionEvent>{
 		alert.showAndWait();
 	}
 
-	public EditItemPage(Item i) {
+	public SellerEditItemPage(Item i) {
 		this.item = i;
 		init();
 		setAlignment();

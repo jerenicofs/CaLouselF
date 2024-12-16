@@ -1,9 +1,9 @@
 package model;
 
 public class Wishlist {
-	private String wishlistId;
-	private String itemId;
-	private String userId;
+	private String wishlistId; // Unique id untuk setiap wishlist.
+	private String itemId; // Foreign key: references items yang ditandai sebagai wishlist oleh user.
+	private String userId; // Foreign key: references users yang menandai sebuah item sebagai wishlist mereka.
 	public Wishlist(String wishlistId, String itemId, String userId) {
 		super();
 		this.wishlistId = wishlistId;
