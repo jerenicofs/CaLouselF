@@ -131,8 +131,6 @@ public class SellerUploadItemPage implements EventHandler<ActionEvent>{
 			else {
 
 				showSuccess("Success", "Your Item has been Uploaded and Now are waiting to be Approved by Admin");
-				ic.uploadItem(nameField.getText(), catField.getText(), sizeField.getText(),
-					priceField.getText());
 				System.out.println("Berhasil Upload");
 				Main.redirect(new HomePage().scene);
 			}

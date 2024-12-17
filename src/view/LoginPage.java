@@ -1,7 +1,5 @@
 package view;
 
-import java.util.ArrayList;
-
 import controller.UserController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -17,7 +15,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import model.User;
 import util.Session;
 
 public class LoginPage implements EventHandler<ActionEvent> {
@@ -29,7 +26,6 @@ public class LoginPage implements EventHandler<ActionEvent> {
 	private PasswordField passwordField;
 	private Button registerBtn, loginBtn, exitBtn;
 	private UserController uc;
-	private ArrayList<User> users;
 	
 	private HBox hbButton;
 
@@ -58,7 +54,6 @@ public class LoginPage implements EventHandler<ActionEvent> {
 		hbButton = new HBox();
 		
 		uc = new UserController();	
-		users = uc.getAllUsers();
 		
 		content = new VBox();
 		scene = new Scene(frame, 1200, 600);

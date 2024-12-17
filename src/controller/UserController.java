@@ -1,38 +1,10 @@
 package controller;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
-
-import database.DatabaseConnection;
 import model.User;
-import util.Session;
 
 public class UserController {
-	
-	private DatabaseConnection db = DatabaseConnection.getInstance();
-	
-	// Method tambahan untuk fetch semua users
-	public ArrayList<User> getAllUsers(){
-		ArrayList<User> res = new ArrayList<>();
-		
-		String query = "SELECT * FROM users";
-		PreparedStatement prepQuery = db.prepareStatement(query);
-		
-		try {
-			db.rs = prepQuery.executeQuery();
-			while(db.rs.next()) {
-				res.add(new User(db.rs.getString("userId"), db.rs.getString("username"), db.rs.getString("password"),
-						db.rs.getString("phoneNumber"), db.rs.getString("address"), db.rs.getString("role")));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return res;
-
-	}
 	
 	// Method wajib: Untuk cek validasi login
 	public int login(String username, String password) {
@@ -45,9 +17,7 @@ public class UserController {
 		
 		boolean loginFlag = false;
 		
-		ArrayList<User> users = new ArrayList<>();
-		users = getAllUsers();
-		
+		ArrayList<User> users = User.getAllUsers();
 		
 		User loggedInUser = null;
 		for(User x : users) {
@@ -60,29 +30,15 @@ public class UserController {
 		
 		if(!loginFlag) return -3;
 		
-		Session.setUser(loggedInUser);
+		// Panggil method di Model untuk login
+		User.Login(loggedInUser);
 		return 1;
 	}
 	
 	// Method untuk menambahkan user baru ke database 
 	// nb: ditambahkan userId dan role sebagai parameter
 	public void register(String userId, String username, String password, String phoneNumber, String address, String role) {
-		String query = "INSERT INTO users (userId, username, password, phoneNumber, address, role)" + "VALUES (?, ?, ?, ?, ?, ?)";
-		PreparedStatement psQuery = db.prepareStatement(query);
-		
-		try {
-			psQuery.setString(1, userId);
-			psQuery.setString(2, username);
-			psQuery.setString(3, password);
-			psQuery.setString(4, phoneNumber);
-			psQuery.setString(5, address);
-			psQuery.setString(6, role);
-			psQuery.executeUpdate();
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-		}
-		
+		User.Register(userId, username, password, phoneNumber, address, role);
 	}
 	
 	// Method untuk check validasi register
@@ -93,8 +49,7 @@ public class UserController {
 		else if(phoneNumber.isEmpty()) return -3.1;
 		else if(address.isEmpty()) return -4;
 		
-		ArrayList<User> users = new ArrayList<>();
-		users = getAllUsers();
+		ArrayList<User> users = User.getAllUsers();
 		
 		// Username validation
 		if(username.length() < 3) return -1.2;
@@ -128,8 +83,7 @@ public class UserController {
 	
 	// Method tambahan untuk generate randomId dan unique
 	public String generateId() {
-		ArrayList<User> users = new ArrayList<>();
-		users = getAllUsers();
+		ArrayList<User> users = User.getAllUsers();
 		
 		Random rand = new Random();
 		

@@ -1,7 +1,5 @@
 package view;
 
-import java.util.ArrayList;
-
 import controller.UserController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,7 +16,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import model.User;
+
 
 public class RegisterPage implements EventHandler<ActionEvent>{
 
@@ -36,7 +34,6 @@ public class RegisterPage implements EventHandler<ActionEvent>{
 	private HBox roleBtn;
 	
 	private UserController uc;
-	private ArrayList<User> users;
 	
 	public Scene scene;
 	
@@ -76,7 +73,6 @@ public class RegisterPage implements EventHandler<ActionEvent>{
 		roleBtn = new HBox();
 		
 		uc = new UserController();
-		users = uc.getAllUsers();
 		
 		content = new VBox();
 		scene = new Scene(frame, 1200, 600);
